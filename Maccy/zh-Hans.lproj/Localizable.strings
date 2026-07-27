@@ -3,10 +3,13 @@
 "clear_all_tooltip" = "清除全部项目。";
 "about_tooltip" = "查看更多应用信息。";
 "quit_tooltip" = "退出应用。";
+"pause_tooltip" = "暂停记录新的剪贴板项目。";
 "clear" = "清除";
 "clear_all" = "全部清除";
 "about" = "关于";
 "quit" = "退出";
+"pause" = "暂停";
+"resume" = "恢复";
 "preferences" = "偏好设置…";
 "preferences_advanced" = "高级";
 "preferences_pins" = "固定";

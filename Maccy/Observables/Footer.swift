@@ -5,6 +5,9 @@ import SwiftUI
 class Footer: ItemsContainer {
   var items: [FooterItem] = []
 
+  private var pauseItem: FooterItem?
+  private var ignoreEventsObserver: Task<Void, Never>?
+
   var selectedItem: FooterItem? {
     willSet {
       selectedItem?.isSelected = false
@@ -25,6 +28,15 @@ class Footer: ItemsContainer {
   }
 
   init() { // swiftlint:disable:this function_body_length
+    let pauseItem = FooterItem(
+      title: Defaults[.ignoreEvents] ? "resume" : "pause",
+      help: "pause_tooltip"
+    ) {
+      Defaults[.ignoreEvents].toggle()
+      Defaults[.ignoreOnlyNextEvent] = false
+    }
+    self.pauseItem = pauseItem
+
     items = [
       FooterItem(
         title: "clear",
@@ -58,6 +70,7 @@ class Footer: ItemsContainer {
           AppState.shared.history.clearAll()
         }
       },
+      pauseItem,
       FooterItem(
         title: "preferences",
         shortcuts: [KeyShortcut(key: .comma)]
@@ -80,5 +93,15 @@ class Footer: ItemsContainer {
         AppState.shared.quit()
       }
     ]
+
+    ignoreEventsObserver = Task { @MainActor [weak pauseItem] in
+      for await value in Defaults.updates(.ignoreEvents) {
+        pauseItem?.title = value ? "resume" : "pause"
+      }
+    }
+  }
+
+  deinit {
+    ignoreEventsObserver?.cancel()
   }
 }

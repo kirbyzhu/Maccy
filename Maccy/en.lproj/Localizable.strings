@@ -3,10 +3,13 @@
 "clear_all_tooltip" = "Clear all items.";
 "about_tooltip" = "Read more about the application.";
 "quit_tooltip" = "Quit application.";
+"pause_tooltip" = "Temporarily ignore all new copies.";
 "clear" = "Clear";
 "clear_all" = "Clear all";
 "about" = "About";
 "quit" = "Quit";
+"pause" = "Pause";
+"resume" = "Resume";
 "preferences" = "Preferences…";
 "preferences_advanced" = "Advanced";
 "preferences_pins" = "Pins";
