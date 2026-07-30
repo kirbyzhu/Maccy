@@ -28,7 +28,7 @@ struct KeyHandlingView<Content: View>: View {
 
         switch KeyChord(NSApp.currentEvent) {
         case .clearHistory:
-          if let item = appState.footer.items.first(where: { $0.title == "clear" }),
+          if let item = appState.footer.clearItem,
              item.confirmation != nil,
              let suppressConfirmation = item.suppressConfirmation {
             if suppressConfirmation.wrappedValue {
@@ -41,7 +41,7 @@ struct KeyHandlingView<Content: View>: View {
             return .ignored
           }
         case .clearHistoryAll:
-          if let item = appState.footer.items.first(where: { $0.title == "clear_all" }),
+          if let item = appState.footer.clearAllItem,
              item.confirmation != nil,
              let suppressConfirmation = item.suppressConfirmation {
             if suppressConfirmation.wrappedValue {

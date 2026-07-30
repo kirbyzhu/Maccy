@@ -3,6 +3,7 @@ import SwiftUI
 
 struct HeaderView: View {
   @State private var appState = AppState.shared
+  @Default(.ignoreEvents) private var ignoreEvents
 
   let controller: SlideoutController
   @FocusState.Binding var searchFocused: Bool
@@ -19,6 +20,22 @@ struct HeaderView: View {
           searchQuery: $appState.history.searchQuery
         )
         .padding(.horizontal, Popup.horizontalPadding)
+
+        ToolbarButton {
+          Defaults[.ignoreEvents].toggle()
+          Defaults[.ignoreOnlyNextEvent] = false
+        } label: {
+          Image(systemName: ignoreEvents ? "play.circle" : "pause.circle")
+            .foregroundColor(ignoreEvents ? .orange : .primary)
+        }
+        .help(
+          Text(
+            ignoreEvents
+              ? NSLocalizedString("resume", comment: "")
+              : NSLocalizedString("pause", comment: "")
+          )
+        )
+        .padding(.trailing, 8)
 
         ToolbarButton {
           controller.togglePreview()

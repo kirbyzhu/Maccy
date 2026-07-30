@@ -5,8 +5,12 @@ import SwiftUI
 class Footer: ItemsContainer {
   var items: [FooterItem] = []
 
-  private var pauseItem: FooterItem?
   private var ignoreEventsObserver: Task<Void, Never>?
+
+  var pauseItem: FooterItem? { items.first { $0.role == .pause } }
+  var clearItem: FooterItem? { items.first { $0.role == .clear } }
+  var clearAllItem: FooterItem? { items.first { $0.role == .clearAll } }
+  var standardItems: [FooterItem] { items.filter { $0.role == .preferences || $0.role == .about || $0.role == .quit } }
 
   var selectedItem: FooterItem? {
     willSet {
@@ -29,16 +33,18 @@ class Footer: ItemsContainer {
 
   init() { // swiftlint:disable:this function_body_length
     let pauseItem = FooterItem(
+      role: .pause,
       title: Defaults[.ignoreEvents] ? "resume" : "pause",
       help: "pause_tooltip"
     ) {
       Defaults[.ignoreEvents].toggle()
       Defaults[.ignoreOnlyNextEvent] = false
     }
-    self.pauseItem = pauseItem
 
     items = [
+      pauseItem,
       FooterItem(
+        role: .clear,
         title: "clear",
         shortcuts: [KeyShortcut(key: .delete, modifierFlags: [.command, .option])],
         help: "clear_tooltip",
@@ -55,6 +61,7 @@ class Footer: ItemsContainer {
         }
       },
       FooterItem(
+        role: .clearAll,
         title: "clear_all",
         shortcuts: [KeyShortcut(key: .delete, modifierFlags: [.command, .option, .shift])],
         help: "clear_all_tooltip",
@@ -64,14 +71,15 @@ class Footer: ItemsContainer {
           confirm: "clear_alert_confirm",
           cancel: "clear_alert_cancel"
         ),
-        suppressConfirmation: suppressClearAlert
+        suppressConfirmation: suppressClearAlert,
+        isVisible: false
       ) {
         Task { @MainActor in
           AppState.shared.history.clearAll()
         }
       },
-      pauseItem,
       FooterItem(
+        role: .preferences,
         title: "preferences",
         shortcuts: [KeyShortcut(key: .comma)]
       ) {
@@ -80,12 +88,14 @@ class Footer: ItemsContainer {
         }
       },
       FooterItem(
+        role: .about,
         title: "about",
         help: "about_tooltip"
       ) {
         AppState.shared.openAbout()
       },
       FooterItem(
+        role: .quit,
         title: "quit",
         shortcuts: [KeyShortcut(key: .q)],
         help: "quit_tooltip"
